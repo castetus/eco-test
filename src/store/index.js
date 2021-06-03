@@ -41,22 +41,22 @@ export default new Vuex.Store({
       }
     },
     async sendLoginData({ state, commit, dispatch }, loginData) {
-      const loginJson = JSON.stringify({
+      const json = JSON.stringify({
         login: loginData.username,
         password: loginData.password,
         IMEI: state.IMEI,
         Name_app: state.nameApp,
       });
-      const userData = await api.sendLoginData(loginJson);
-      if (userData && userData.id_login !== 0) {
-        commit('SET_USER_DATA', userData);
+      const userData = await api.sendRequest('api/client_login', json);
+      if (userData && userData[0].id_login !== 0) {
+        commit('SET_USER_DATA', userData[0]);
         dispatch('requestDocsList');
         return true;
       }
       return false;
     },
     async requestDocsList({ state, commit }) {
-      const docsJson = JSON.stringify({
+      const json = JSON.stringify({
         id_login: state.userData.id_login,
         id_people: state.userData.id_login,
         TK: state.userData.TK,
@@ -64,13 +64,30 @@ export default new Vuex.Store({
         Name_app: state.nameApp,
         Name_event: 'list_load',
       });
-      const docsList = await api.requestDocsList(docsJson);
+      const docsList = await api.sendRequest('api/test', json);
       if (docsList) {
         commit('SET_DOCS_LIST', docsList);
       }
     },
     logout({ commit }) {
       commit('LOGOUT');
+    },
+    async getDocument({ state }, data) {
+      const json = JSON.stringify({
+        id_login: state.userData.id_login,
+        id_people: state.userData.id_login,
+        TK: state.userData.TK,
+        IMEI: state.IMEI,
+        Name_app: state.nameApp,
+        Name_event: 'get_pic_path',
+        id_document: data.id,
+        doc_type: data.type,
+      });
+      const docUrl = await api.sendRequest('api/test', json);
+      if (docUrl) {
+        return docUrl.body[0];
+      }
+      return false;
     },
   },
   getters: {

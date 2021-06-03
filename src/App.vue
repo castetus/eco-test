@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <header class="header">
       <img src="./assets/logo.png" alt="Эко безопасность">
       <div class="user" v-if="isLogin">
-        <span class="user__id">Ваш логин: {{userId}}</span>
-        <span class="user__name">{{userName}}</span>
+        <span class="user__info">Ваш логин: {{userId}}</span>
+        <span class="user__info">{{userName}}</span>
         <button class="btn btn_exit" @click="logout">Выйти</button>
       </div>
-    </div>
+    </header>
     <router-view/>
   </div>
 </template>
@@ -53,11 +53,16 @@ li {
   color: #2c3e50;
 }
 
-#nav {
+.header {
   display: flex;
   width: 100%;
   justify-content: space-between;
   padding: 30px;
+}
+.user{
+  &__info{
+    margin-right: 20px;
+  }
 }
 .btn{
   padding: 20px 40px;
@@ -73,7 +78,6 @@ li {
   }
   &_download{
     background-color: #3eaf7c;
-    background-image: require('@/assets/download.svg');
   }
 }
 </style>

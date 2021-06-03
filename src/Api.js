@@ -2,7 +2,7 @@ import axios from 'axios';
 import FingerprintJS from '@fingerprintjs/fingerprintjs-pro';
 import md5 from 'blueimp-md5';
 
-const BASE_URL = 'https://host1.medsafe.tech:40443/api/';
+export const BASE_URL = 'https://host1.medsafe.tech:40443/';
 
 const getImei = async function getImei() {
   const fpPromise = FingerprintJS.load({ token: 'CmaOCCWcRFUU8DcMgXOm' });
@@ -24,26 +24,11 @@ export default class Api {
     return this.getImei();
   }
 
-  async sendLoginData(userdata) {
-    console.log(userdata);
+  async sendRequest(url, payload) {
     try {
-      const response = await this.instance.get('client_login', {
+      const response = await this.instance.get(url, {
         params: {
-          json: userdata,
-        },
-      });
-      const result = await response.data[0];
-      return result;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async requestDocsList(requestData) {
-    try {
-      const response = await this.instance.get('test', {
-        params: {
-          json: requestData,
+          json: payload,
         },
       });
       const result = await response.data;
