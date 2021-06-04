@@ -1,6 +1,8 @@
 <template>
   <div class="form-login">
-    <form class="form">
+    <form
+      class="form"
+      v-on:keyup.enter="login">
       <h2>Вход в личный кабинет</h2>
       <h4>Используйте логин и пароль из памятки</h4>
       <input
@@ -29,11 +31,9 @@
 </template>
 
 <script>
+
 export default {
   name: 'LoginForm',
-  props: {
-
-  },
   data() {
     return {
       username: '',
@@ -49,6 +49,8 @@ export default {
       const login = await this.$store.dispatch('sendLoginData', payload);
       if (login) {
         this.$router.push({ path: '/database' });
+      } else {
+        alert('Пользователь не найден');
       }
     },
   },
@@ -69,5 +71,17 @@ export default {
       border: 1px solid #d9d9d9;
       border-radius: 2px;
     }
+  }
+  .popup{
+    position: absolute;
+    top: 50px;
+    left: calc(50% - 100px);
+    width: 200px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   }
 </style>

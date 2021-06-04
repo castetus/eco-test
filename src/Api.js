@@ -37,4 +37,16 @@ export default class Api {
       return error;
     }
   }
+
+  async getFile(hash) {
+    try {
+      const response = await this.instance.get(hash, {
+        responseType: 'blob',
+      });
+      const result = await response.data;
+      return result;
+    } catch (error) {
+      return error.response.status;
+    }
+  }
 }

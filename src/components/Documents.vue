@@ -13,7 +13,7 @@
         </p>
         <button
           class="btn btn_download documents__download"
-          @click="downloadDocument(document.id_document, document.doc_name, document.doc_type)">
+          @click="downloadDocument(document.id_document, document.doc_type)">
           Скачать
         </button>
       </li>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { BASE_URL } from '@/Api';
+import Api from '@/Api';
 
 export default {
   name: 'Documents',
@@ -35,19 +35,25 @@ export default {
     async downloadDocument(id, type) {
       const file = await this.$store.dispatch('getDocument', { id, type });
       if (file) {
-        this.getFile(file);
+        const data = await new Api().getFile(file.hash);
+        if (data === 404) {
+          this.message('Файл отсутствует');
+          return;
+        }
+        const doc = this.$store.getters.doc(id);
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${doc.doc_name}.${doc.file_ext}`);
+        document.body.append(link);
+        link.click();
+        link.remove();
       } else {
-        this.message();
+        this.message('Файл не найден');
       }
     },
-    getFile(file) {
-      const link = document.createElement('a');
-      // link.setAttribute('download', `file${file.extension}`);
-      link.setAttribute('download', true);
-      link.setAttribute('href', BASE_URL + file.hash);
-      console.log(link);
-      link.click();
-      link.remove();
+    message(text) {
+      alert(text);
     },
   },
 };

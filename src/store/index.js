@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     nameApp: 'connect',
     IMEI: '',
+    isLoginError: false,
     login: false,
     userData: null,
     docsList: [],
@@ -48,10 +49,13 @@ export default new Vuex.Store({
         Name_app: state.nameApp,
       });
       const userData = await api.sendRequest('api/client_login', json);
-      if (userData && userData[0].id_login !== 0) {
-        commit('SET_USER_DATA', userData[0]);
-        dispatch('requestDocsList');
-        return true;
+      if (userData) {
+        if (userData[0].id_login !== 0) {
+          commit('SET_USER_DATA', userData[0]);
+          dispatch('requestDocsList');
+          return userData[0].id_login;
+        }
+        return false;
       }
       return false;
     },
@@ -109,5 +113,6 @@ export default new Vuex.Store({
     docsList(state) {
       return state.docsList;
     },
+    doc: (state) => (id) => state.docsList.find((document) => document.id_document === id),
   },
 });
